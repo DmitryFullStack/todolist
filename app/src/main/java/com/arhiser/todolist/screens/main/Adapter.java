@@ -1,79 +1,31 @@
 package com.arhiser.todolist.screens.main;
 
-import static java.util.Objects.nonNull;
-
 import android.app.Activity;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SortedList;
 
 import com.arhiser.todolist.App;
 import com.arhiser.todolist.R;
 import com.arhiser.todolist.model.Note;
 import com.arhiser.todolist.screens.details.NoteDetailsActivity;
 
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Adapter extends RecyclerView.Adapter<Adapter.NoteViewHolder> {
+public class Adapter extends ListAdapter<Note, Adapter.NoteViewHolder> {
 
-    private SortedList<Note> sortedList;
-
-    public Adapter() {
-
-        sortedList = new SortedList<>(Note.class, new SortedList.Callback<Note>() {
-            @Override
-            public int compare(Note o1, Note o2) {
-                if (!o2.done && o1.done) {
-                    return 1;
-                }
-                if (o2.done && !o1.done) {
-                    return -1;
-                }
-                return (int) (o2.timestamp - o1.timestamp);
-            }
-
-            @Override
-            public void onChanged(int position, int count) {
-                notifyItemRangeChanged(position, count);
-            }
-
-            @Override
-            public boolean areContentsTheSame(Note oldItem, Note newItem) {
-                return oldItem.equals(newItem);
-            }
-
-            @Override
-            public boolean areItemsTheSame(Note item1, Note item2) {
-                return item1.uid == item2.uid;
-            }
-
-            @Override
-            public void onInserted(int position, int count) {
-                notifyItemRangeInserted(position, count);
-            }
-
-            @Override
-            public void onRemoved(int position, int count) {
-                notifyItemRangeRemoved(position, count);
-            }
-
-            @Override
-            public void onMoved(int fromPosition, int toPosition) {
-                notifyItemMoved(fromPosition, toPosition);
-            }
-        });
+    protected Adapter() {
+        super(new MainActivity.NoteItemCallback());
     }
 
     @NonNull
@@ -85,26 +37,21 @@ public class Adapter extends RecyclerView.Adapter<Adapter.NoteViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull NoteViewHolder holder, int position) {
-        int size = sortedList.size();
+        int size = getItemCount();
         Date now = new Date(System.currentTimeMillis());
         for (int i = 0; i < size; i++) {
-            if(sortedList.get(i).done){
-                Date date = new Date(sortedList.get(i).timestamp);
+            if(getItem(i).done){
+                Date date = new Date(getItem(i).timestamp);
                 if(now.getDay() != date.getDay()){
-                    sortedList.get(i).done = false;
+                    getItem(i).done = false;
                 }
             }
         }
-        holder.bind(sortedList.get(position));
-    }
-
-    @Override
-    public int getItemCount() {
-        return sortedList.size();
+        holder.bind(getItem(position));
     }
 
     public void setItems(List<Note> notes) {
-        sortedList.replaceAll(notes);
+//        g.addAll(notes);
     }
 
     static class NoteViewHolder extends RecyclerView.ViewHolder {

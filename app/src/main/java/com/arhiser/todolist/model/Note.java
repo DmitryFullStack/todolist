@@ -65,6 +65,10 @@ public class Note implements Parcelable {
         dest.writeByte((byte) (done ? 1 : 0));
     }
 
+    public Integer getUid(){
+        return uid;
+    }
+
     @Override
     public int describeContents() {
         return 0;

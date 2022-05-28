@@ -8,10 +8,12 @@ import com.arhiser.todolist.screens.details.NoteDetailsActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,20 +43,27 @@ public class MainActivity extends AppCompatActivity {
         final Adapter adapter = new Adapter();
         recyclerView.setAdapter(adapter);
 
+
+
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NoteDetailsActivity.start(MainActivity.this, null);
-            }
-        });
+        fab.setOnClickListener(view -> NoteDetailsActivity.start(MainActivity.this, null));
 
         MainViewModel mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-        mainViewModel.getNoteLiveData().observe(this, new Observer<List<Note>>() {
-            @Override
-            public void onChanged(List<Note> notes) {
-                adapter.setItems(notes);
-            }
-        });
+        mainViewModel.getNoteLiveData().observe(this, notes -> adapter.submitList(mainViewModel.getNoteLiveData().getValue()));
+    }
+
+    static class NoteItemCallback extends DiffUtil.ItemCallback<Note>{
+
+
+
+        @Override
+        public boolean areItemsTheSame(@NonNull Note oldItem, @NonNull Note newItem) {
+            return oldItem.getUid().equals(newItem.getUid());
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull Note oldItem, @NonNull Note newItem) {
+            return oldItem.equals(newItem);
+        }
     }
 }
