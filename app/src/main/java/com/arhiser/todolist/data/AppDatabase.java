@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase;
 
 import com.arhiser.todolist.model.Note;
 
-@Database(entities = {Note.class}, version = 1, exportSchema = false)
+@Database(entities = {Note.class}, version = 2, exportSchema = true)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract NoteDao noteDao();
 }

@@ -16,6 +16,9 @@ public class Note implements Parcelable {
     @ColumnInfo(name = "text")
     public String text;
 
+    @ColumnInfo(name = "color")
+    public Integer color;
+
     @ColumnInfo(name = "timestamp")
     public long timestamp;
 

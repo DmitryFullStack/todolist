@@ -1,6 +1,10 @@
 package com.arhiser.todolist.screens.main;
 
+import static java.util.Objects.nonNull;
+
 import android.app.Activity;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +22,8 @@ import com.arhiser.todolist.R;
 import com.arhiser.todolist.model.Note;
 import com.arhiser.todolist.screens.details.NoteDetailsActivity;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 public class Adapter extends RecyclerView.Adapter<Adapter.NoteViewHolder> {
@@ -79,6 +85,16 @@ public class Adapter extends RecyclerView.Adapter<Adapter.NoteViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull NoteViewHolder holder, int position) {
+        int size = sortedList.size();
+        Date now = new Date(System.currentTimeMillis());
+        for (int i = 0; i < size; i++) {
+            if(sortedList.get(i).done){
+                Date date = new Date(sortedList.get(i).timestamp);
+                if(now.getDay() != date.getDay()){
+                    sortedList.get(i).done = false;
+                }
+            }
+        }
         holder.bind(sortedList.get(position));
     }
 
@@ -108,29 +124,17 @@ public class Adapter extends RecyclerView.Adapter<Adapter.NoteViewHolder> {
             completed = itemView.findViewById(R.id.completed);
             delete = itemView.findViewById(R.id.delete);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    NoteDetailsActivity.start((Activity) itemView.getContext(), note);
-                }
-            });
+            itemView.setOnClickListener(view -> NoteDetailsActivity.start((Activity) itemView.getContext(), note));
 
-            delete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    App.getInstance().getNoteDao().delete(note);
-                }
-            });
+            delete.setOnClickListener(view -> App.getInstance().getNoteDao().delete(note));
 
-            completed.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                    if (!silentUpdate) {
-                        note.done = checked;
-                        App.getInstance().getNoteDao().update(note);
-                    }
-                    updateStrokeOut();
+            completed.setOnCheckedChangeListener((compoundButton, checked) -> {
+                if (!silentUpdate) {
+                    note.done = checked;
+                    note.timestamp = System.currentTimeMillis();
+                    App.getInstance().getNoteDao().update(note);
                 }
+                updateStrokeOut();
             });
 
         }
@@ -144,9 +148,13 @@ public class Adapter extends RecyclerView.Adapter<Adapter.NoteViewHolder> {
             silentUpdate = true;
             completed.setChecked(note.done);
             silentUpdate = false;
+
+            if(note.color != null){
+                noteText.setTextColor(note.color);
+            }
         }
 
-        private void updateStrokeOut() {
+        private void  updateStrokeOut() {
             if (note.done) {
                 noteText.setPaintFlags(noteText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             } else {
