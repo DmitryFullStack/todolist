@@ -6,4 +6,7 @@
     <string name="note_details_title">Заметка</string>
     <string name="save">Сохранить</string>
     <string name="completed">Выполнение</string>
+    <string name="greentask">Green Task</string>
+    <string name="red_task">red task</string>
+    <string name="daily">daily</string>
 </resources>

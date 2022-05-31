@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -40,7 +41,7 @@ public class Adapter extends ListAdapter<Note, Adapter.NoteViewHolder> {
         int size = getItemCount();
         Date now = new Date(System.currentTimeMillis());
         for (int i = 0; i < size; i++) {
-            if(getItem(i).done){
+            if(getItem(i).daily && getItem(i).done){
                 Date date = new Date(getItem(i).timestamp);
                 if(now.getDay() != date.getDay()){
                     getItem(i).done = false;
@@ -59,6 +60,7 @@ public class Adapter extends ListAdapter<Note, Adapter.NoteViewHolder> {
         TextView noteText;
         CheckBox completed;
         View delete;
+        ImageView daily;
 
         Note note;
 
@@ -70,6 +72,7 @@ public class Adapter extends ListAdapter<Note, Adapter.NoteViewHolder> {
             noteText = itemView.findViewById(R.id.note_text);
             completed = itemView.findViewById(R.id.completed);
             delete = itemView.findViewById(R.id.delete);
+            daily = itemView.findViewById(R.id.daily);
 
             itemView.setOnClickListener(view -> NoteDetailsActivity.start((Activity) itemView.getContext(), note));
 
@@ -98,6 +101,9 @@ public class Adapter extends ListAdapter<Note, Adapter.NoteViewHolder> {
 
             if(note.color != null){
                 noteText.setTextColor(note.color);
+            }
+            if(note.daily){
+                daily.setVisibility(View.VISIBLE);
             }
         }
 

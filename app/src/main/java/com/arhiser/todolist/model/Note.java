@@ -25,6 +25,9 @@ public class Note implements Parcelable {
     @ColumnInfo(name = "done")
     public boolean done;
 
+    @ColumnInfo(name = "daily")
+    public boolean daily;
+
     public Note() {
     }
 
@@ -67,6 +70,10 @@ public class Note implements Parcelable {
 
     public Integer getUid(){
         return uid;
+    }
+
+    public void setDaily(boolean value){
+        daily = value;
     }
 
     @Override

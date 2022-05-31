@@ -8,6 +8,15 @@
     android:paddingRight="16dp"
     android:gravity="center">
 
+    <ImageView
+        android:id="@+id/daily"
+        android:layout_width="15dp"
+        android:layout_marginHorizontal="5dp"
+        android:layout_height="match_parent"
+        android:src="@drawable/yellow_signal"
+        android:visibility="invisible"
+        />
+
     <TextView
         android:id="@+id/note_text"
         android:layout_width="0dp"
@@ -16,6 +25,7 @@
         android:minHeight="64dp"
         android:gravity="center_vertical"
         tools:text="some text for testing"/>
+
 
     <CheckBox
         android:id="@+id/completed"

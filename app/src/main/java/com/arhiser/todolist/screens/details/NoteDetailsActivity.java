@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -53,10 +54,12 @@ public class NoteDetailsActivity extends AppCompatActivity {
         editText = findViewById(R.id.text);
         Button redButton = findViewById(R.id.red);
         Button greenButton = findViewById(R.id.green);
+        Button dailyButton = findViewById(R.id.daily);
         FloatingActionButton storeButton = findViewById(R.id.store);
 
         redButton.setOnClickListener(btn -> editText.setTextColor(Color.RED));
         greenButton.setOnClickListener(btn -> editText.setTextColor(Color.GREEN));
+        dailyButton.setOnClickListener(btn -> note.setDaily(btn.isPressed()));
         storeButton.setOnClickListener(btn -> saveNote());
 
         if (getIntent().hasExtra(EXTRA_NOTE)) {
